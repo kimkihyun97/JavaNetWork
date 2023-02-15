@@ -23,17 +23,18 @@ public abstract class Monster {
     }
     public void Attack(Character character){
         Character = character ;
+        Character.Hp -= 75;
         if(Character.Hp<=0){
             Character.Level =1 ;
             System.out.println(Character.name+"가 죽었습니다.");
             System.out.println("죽음의 대한 페널티로 "+Character.name+"의 Level이 "+Character.Level+"이 됩니다");
+
         }
         else if(MonsterHp<=0) {
             System.out.println(name+"가 죽어 "+Character.name+"은 공격 받지 않았습니다.");
         }
         else {
             Character = character;
-            Character.Hp -= 10;
             System.out.println(Character.name + "이/가 " + name + "의 공격을 받았습니다.");
             System.out.println(Character.name + "의 Hp : " + Character.Hp);
         }

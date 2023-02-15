@@ -7,7 +7,7 @@ public class Sword implements WeaponBehavior {
     public String Item;
 
     public Sword(int attack, String item) {
-        Attack = Attack ;
+        Attack = attack ;
         Item = item;
     }
 

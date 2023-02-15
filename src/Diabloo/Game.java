@@ -4,11 +4,11 @@ import Diabloo.Character.Character;
 import Diabloo.Character.Sorceress;
 import Diabloo.Monster.Ork;
 import Diabloo.WeaPon.*;
-import Diabloo.function.CharacterThread;
 import Diabloo.function.Delay;
-import Diabloo.function.MonsterThread;
 
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Game {
 
@@ -16,6 +16,7 @@ public class Game {
         Character character ;
         WeaponBehavior Item ;
         long attackspeed;
+        ExecutorService exec = Executors.newFixedThreadPool(2);
         Scanner in = new Scanner(System.in) ;
         System.out.print("Game ");
         Delay.delay(700);
@@ -24,34 +25,34 @@ public class Game {
             Delay.delay(700);
         }
         System.out.print("K");
-        Delay.delay(700);
+        Delay.delay(500);
         System.out.print("i");
-        Delay.delay(700);
+        Delay.delay(500);
         System.out.print("l");
-        Delay.delay(700);
+        Delay.delay(500);
         System.out.print("l");
-        Delay.delay(700);
+        Delay.delay(500);
         System.out.print(" t");
-        Delay.delay(700);
+        Delay.delay(500);
         System.out.print("h");
-        Delay.delay(700);
+        Delay.delay(500);
         System.out.print("e");
-        Delay.delay(700);
-        System.out.print(" r");
-        Delay.delay(700);
+        Delay.delay(500);
+        System.out.print(" R");
+        Delay.delay(500);
         System.out.print("e");
-        Delay.delay(700);
+        Delay.delay(500);
         System.out.print("d");
-        Delay.delay(700);
-        System.out.print(" o");
-        Delay.delay(700);
+        Delay.delay(500);
+        System.out.print(" O");
+        Delay.delay(500);
         System.out.print("r");
-        Delay.delay(700);
+        Delay.delay(500);
         System.out.print("k");
-        Delay.delay(700);
+        Delay.delay(500);
         for(int i=0;i<2;i++) {
             System.out.print("-");
-            Delay.delay(700);
+            Delay.delay(500);
         }
         System.out.println();
         for(int i=0;i<7;i++){
@@ -138,67 +139,119 @@ public class Game {
                             Delay.delay(1000);
                             System.out.println("저기 무기가 있어요! 어서 무기를 장착하세요");
                             Delay.delay(1000);
+                            System.out.println("이름/타입/공격력/공격속도 (추가예정)");
+                            System.out.println("1) Buserker/Axes/200/1500, 2) Silpheed/Bow/100/500, 3) Excalibur/Sword/150/1000, 4) Obscura/Orb/500/3000");
                             while(true) {
-                                System.out.println("이름/타입/공격력/공격속도(추가예정)");
-                                Delay.delay(500);
-                                System.out.println("1) Buserker/Axes/200/1500, 2) Silpheed/Bow/100/500, 3) Excalibur/Sword/150/1000, 4) Obscura/Orb/500/3000");
+
                                 int weapon = in.nextInt();
-                                if(weapon==1){
+                                if (weapon == 1) {
                                     Item = new Axes(200, "Buserker");
                                     attackspeed = 1500;
-                                }
-                                else if(weapon==2){
+
+                                    break;
+                                } else if (weapon == 2) {
                                     Item = new Bow(100, "Silpheed");
                                     attackspeed = 500;
-                                }
-                                else if(weapon==3){
-                                    Item = new Sword(150,"Excalibur");
+
+                                    break;
+                                } else if (weapon == 3) {
+                                    Item = new Sword(150, "Excalibur");
                                     attackspeed = 1000;
-                                }
-                                else if(weapon==4){
-                                    Item = new Orb(500,"Obscura");
+
+                                    break;
+                                } else if (weapon == 4) {
+                                    Item = new Orb(500, "Obscura");
                                     attackspeed = 3000;
 
-                                }
-                                else{
+                                    break;
+
+                                } else {
                                     System.out.println("잘못된 입력입니다. 다시 입력하세요");
                                     continue;
                                 }
-                                character.setWeapon(Item);
-                                Delay.delay(1000);
-                                System.out.println("몬스터가 다가 오고 있어요! 공격하세요!");
-                                Delay.delay(1000);
-                                MonsterThread mthread = new MonsterThread(character,ork,Item);
-                                CharacterThread cthread = new CharacterThread(character,ork,Item,attackspeed);
-
-                                while(true){
-                                    mthread.start();
-                                    cthread.start();
-                                    if(ork.MonsterHp==0){
-                                        System.out.println("축하합니다 용사님! 당신이 몬스터를 쓰러트렸습니다!!");
-                                        System.exit(1);
-                                    }
-                                    else if(character.Hp==0){
-                                        System.out.println("당신은 죽었습니다.");
-                                        Delay.delay(1500);
-                                        System.out.println("복수를 원하시면 1번을 게임을 종료하고 싶다면 2번을 누르세요");
-                                        int push = in.nextInt();
-                                        if(push==1){
-                                            System.out.println("다시 한번 힘내세요!");
-                                            break;
-                                        }
-                                        else{
-                                            System.out.println("Game over");
-                                            System.exit(1);
-
-                                    }
-                                }
-
-                                }
-
                             }
 
-                        }
+                                character.setWeapon(Item);
+                                System.out.println();
+                                System.out.println("몬스터가 다가 오고 있어요! 공격하세요!");
+                                Delay.delay(1000);
+
+                                Character finalCharacter = character;
+                                WeaponBehavior finalItem = Item;
+                                long finalAttackspeed1 = attackspeed;
+
+                                exec.submit(() -> {
+                                    try {
+
+                                        while (finalCharacter.Hp > 0 && ork.MonsterHp>0) {
+
+                                            finalCharacter.PerformWeapon(ork);
+                                            System.out.println();
+                                            ork.Attacked(finalItem);
+                                            System.out.println();
+                                            finalCharacter.CheckEx();
+                                            System.out.println();
+                                            Thread.sleep(finalAttackspeed1);
+
+                                        }
+                                    }
+                                    catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                });
+                                exec.submit(()->{
+                                    try {
+                                        while (finalCharacter.Hp > 0 && ork.MonsterHp>0) {
+
+                                            ork.Attack(finalCharacter);
+                                            System.out.println();
+                                            Thread.sleep(1500);
+
+                                        }
+                                    }
+                                    catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                });
+                                exec.shutdown();
+//                                if(ork.MonsterHp<=0 && finalCharacter.Hp > 0){
+//                                    exec.shutdownNow();
+//                                    System.out.println("축하합니다 용사님! 당신이 몬스터를 쓰러트렸습니다!!");
+//                                    Delay.delay(1000);
+//                                    System.out.println("Good game");
+//                                    System.exit(1);
+//
+//                                }
+//                                else if(ork.MonsterHp>0 && finalCharacter.Hp <= 0){
+//                                    exec.shutdownNow();
+//                                    System.out.println("당신은 죽었습니다.");
+//                                    Delay.delay(1500);
+//                                    System.out.println("복수를 원하시면 1번을 게임을 종료하고 싶다면 2번을 누르세요");
+//                                    int push = in.nextInt();
+//                                    if(push==1){
+//                                        System.out.println("다시 한번 힘내세요!");
+//                                        break;
+//                                    }
+//                                    else{
+//                                        System.out.println("Game over");
+//                                        System.exit(1);
+//
+//                                    }
+//
+//                                }
+//                                else{
+//                                    System.out.println("치열한 싸움으로 인하여 살아남은 자는 없었다");
+//                                    for(int i=0;i<6;i++){
+//                                        Delay.delay(600);
+//                                        System.out.print(".");
+//                                    }
+//                                    System.out.println();
+//                                    System.out.println("Game Over");
+//                                    System.exit(1);
+//                                }
+                            }
+
+
                         else if(choice==2){
                             System.out.println("도망가던 당신은 오크에게 잡혀 죽었습니다...");
                             for(int i=0;i<5;i++) {

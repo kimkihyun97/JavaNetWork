@@ -6,7 +6,7 @@ public class Orb implements WeaponBehavior {
     public int Attack ;
     public String Item;
     public Orb(int attack,String item) {
-        Attack = Attack ;
+        Attack = attack ;
         Item = item ;
     }
     @Override
