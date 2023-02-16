@@ -27,8 +27,6 @@ public abstract class Monster {
         if(Character.Hp<=0){
             Character.Level =1 ;
             System.out.println(Character.name+"가 죽었습니다.");
-            System.out.println("죽음의 대한 페널티로 "+Character.name+"의 Level이 "+Character.Level+"이 됩니다");
-
         }
         else if(MonsterHp<=0) {
             System.out.println(name+"가 죽어 "+Character.name+"은 공격 받지 않았습니다.");

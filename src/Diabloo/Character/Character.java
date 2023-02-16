@@ -22,14 +22,12 @@ public abstract class Character {
             Xp -=100.0;
             Level++;
 
-
             System.out.println(name+"의 Level이 Level"+Level+"로 레벨업했습니다.");
         }
     }
 
     public void setWeapon(WeaponBehavior weapon) {
         Weapon = weapon;
-
         System.out.println(name+"가 "+Weapon.getitem()+"을 장착했습니다.");
 
     }
